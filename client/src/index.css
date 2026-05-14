@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+:root {
+  --primary: #2e7d32;
+  --primary-light: #a5d6a7;
+  --primary-bg: #e8f5e9;
+  --white: #ffffff;
+  --text-dark: #1b1b1b;
+  --text-muted: #555;
+  --shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+body {
+  background: var(--white);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; font-family: inherit; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--white);
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.btn-primary:hover { background: #1b5e20; }
+
+.btn-outline {
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  padding: 8px 22px;
+  border-radius: 6px;
+  background: transparent;
+  font-weight: 600;
+}
+
+.card {
+  background: var(--white);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; margin-bottom: 6px; font-weight: 500; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.section { padding: 60px 0; }
+.section-title { font-size: 28px; color: var(--primary); margin-bottom: 24px; text-align: center; }
