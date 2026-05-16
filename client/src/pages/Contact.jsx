@@ -1,155 +1,217 @@
+// client/src/pages/Contact.jsx
 import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import api from '../api/axios';
 
 export default function Contact() {
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
+  const [status, setStatus] = useState({ loading: false, success: '', error: '' });
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    toast.success(
-      'আপনার বার্তা পাঠানো হয়েছে। আমরা শীঘ্রই যোগাযোগ করব।'
-    );
-
-    setForm({
-      name: '',
-      email: '',
-      message: '',
-    });
+    setStatus({ loading: true, success: '', error: '' });
+    try {
+      await api.post('/contact', form);
+      setStatus({ loading: false, success: 'আপনার বার্তা সফলভাবে পাঠানো হয়েছে। ধন্যবাদ!', error: '' });
+      setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+    } catch (err) {
+      setStatus({
+        loading: false,
+        success: '',
+        error: err.response?.data?.message || 'বার্তা পাঠাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।',
+      });
+    }
   };
 
   return (
-    <section className="section">
-      <div className="container">
-        <h2 className="section-title">যোগাযোগ করুন</h2>
+    <div className="container" style={{ padding: '3rem 1rem', maxWidth: '900px', margin: '0 auto' }}>
+      <h1 style={{ color: '#2e7d32', textAlign: 'center', marginBottom: '0.5rem' }}>যোগাযোগ করুন</h1>
+      <p style={{ textAlign: 'center', color: '#555', marginBottom: '2.5rem' }}>
+        আপনার প্রশ্ন, পরামর্শ বা সহযোগিতার জন্য আমাদের সাথে যোগাযোগ করুন।
+      </p>
 
-        <div style={styles.grid}>
-          {/* Contact Info */}
-          <div className="card">
-            <h3 style={styles.heading}>আমাদের তথ্য</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }} className="contact-grid">
+        {/* Contact Info */}
+        <div
+          style={{
+            backgroundColor: '#f1f8e9',
+            padding: '2rem',
+            borderRadius: '12px',
+            border: '1px solid #c8e6c9',
+          }}
+        >
+          <h2 style={{ color: '#2e7d32', marginBottom: '1.5rem' }}>আমাদের ঠিকানা</h2>
 
-            <p style={styles.info}>
-              <FaMapMarkerAlt style={styles.icon} />
-              ঢাকা, বাংলাদেশ
-            </p>
-
-            <p style={styles.info}>
-              <FaPhone style={styles.icon} />
-              +৮৮০ ১৭xx-xxxxxx
-            </p>
-
-            <p style={styles.info}>
-              <FaEnvelope style={styles.icon} />
-              info@bismillahtrust.org
-            </p>
-
-            <p style={styles.description}>
-              যেকোনো প্রশ্ন বা সহায়তার প্রয়োজনে আমাদের সাথে নির্দ্বিধায়
-              যোগাযোগ করুন।
+          <div style={{ marginBottom: '1.25rem' }}>
+            <strong style={{ color: '#388e3c' }}>📍 অফিস:</strong>
+            <p style={{ margin: '0.25rem 0 0 0', color: '#444' }}>
+              বিসমিল্লাহ সমবায় ট্রাস্ট<br />
+              প্রধান কার্যালয়, ঢাকা, বাংলাদেশ
             </p>
           </div>
 
-          {/* Contact Form */}
-          <form onSubmit={handleSubmit} className="card">
-            <div className="form-group">
-              <label>আপনার নাম</label>
+          <div style={{ marginBottom: '1.25rem' }}>
+            <strong style={{ color: '#388e3c' }}>📞 ফোন:</strong>
+            <p style={{ margin: '0.25rem 0 0 0', color: '#444' }}>+৮৮০ ১৭০০ ০০০০০০</p>
+          </div>
 
-              <input
-                type="text"
-                placeholder="আপনার নাম লিখুন"
-                value={form.name}
-                onChange={(e) =>
-                  setForm({ ...form, name: e.target.value })
-                }
-                required
-              />
-            </div>
+          <div style={{ marginBottom: '1.25rem' }}>
+            <strong style={{ color: '#388e3c' }}>✉️ ইমেইল:</strong>
+            <p style={{ margin: '0.25rem 0 0 0', color: '#444' }}>info@bismillahtrust.org</p>
+          </div>
 
-            <div className="form-group">
-              <label>ইমেইল</label>
-
-              <input
-                type="email"
-                placeholder="আপনার ইমেইল লিখুন"
-                value={form.email}
-                onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
-                }
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>বার্তা</label>
-
-              <textarea
-                rows="5"
-                placeholder="আপনার বার্তা লিখুন"
-                value={form.message}
-                onChange={(e) =>
-                  setForm({ ...form, message: e.target.value })
-                }
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="btn-primary"
-              style={styles.button}
-            >
-              বার্তা পাঠান
-            </button>
-          </form>
+          <div>
+            <strong style={{ color: '#388e3c' }}>🕒 অফিস সময়:</strong>
+            <p style={{ margin: '0.25rem 0 0 0', color: '#444' }}>
+              শনি - বৃহস্পতি: সকাল ৯টা - বিকাল ৫টা<br />
+              শুক্রবার: বন্ধ
+            </p>
+          </div>
         </div>
+
+        {/* Contact Form */}
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            backgroundColor: '#fff',
+            padding: '2rem',
+            borderRadius: '12px',
+            border: '1px solid #c8e6c9',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+          }}
+        >
+          <h2 style={{ color: '#2e7d32', marginBottom: '1.5rem' }}>বার্তা পাঠান</h2>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.4rem', color: '#388e3c', fontWeight: '500' }}>
+              নাম *
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.4rem', color: '#388e3c', fontWeight: '500' }}>
+              ইমেইল *
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.4rem', color: '#388e3c', fontWeight: '500' }}>
+              ফোন
+            </label>
+            <input
+              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.4rem', color: '#388e3c', fontWeight: '500' }}>
+              বিষয় *
+            </label>
+            <input
+              type="text"
+              name="subject"
+              value={form.subject}
+              onChange={handleChange}
+              required
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginBottom: '1.25rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.4rem', color: '#388e3c', fontWeight: '500' }}>
+              বার্তা *
+            </label>
+            <textarea
+              name="message"
+              value={form.message}
+              onChange={handleChange}
+              required
+              rows="5"
+              style={{ ...inputStyle, resize: 'vertical' }}
+            />
+          </div>
+
+          {status.success && (
+            <div
+              style={{
+                padding: '0.75rem',
+                backgroundColor: '#e8f5e9',
+                color: '#2e7d32',
+                borderRadius: '6px',
+                marginBottom: '1rem',
+                border: '1px solid #a5d6a7',
+              }}
+            >
+              {status.success}
+            </div>
+          )}
+
+          {status.error && (
+            <div
+              style={{
+                padding: '0.75rem',
+                backgroundColor: '#ffebee',
+                color: '#c62828',
+                borderRadius: '6px',
+                marginBottom: '1rem',
+                border: '1px solid #ef9a9a',
+              }}
+            >
+              {status.error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={status.loading}
+            style={{
+              width: '100%',
+              padding: '0.85rem',
+              backgroundColor: status.loading ? '#81c784' : '#2e7d32',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '6px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: status.loading ? 'not-allowed' : 'pointer',
+              transition: 'background-color 0.2s',
+            }}
+          >
+            {status.loading ? 'পাঠানো হচ্ছে...' : 'বার্তা পাঠান'}
+          </button>
+        </form>
       </div>
-    </section>
+    </div>
   );
 }
 
-const styles = {
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: 24,
-    marginTop: 30,
-  },
-
-  heading: {
-    color: 'var(--primary)',
-    marginBottom: 16,
-    fontSize: 22,
-    fontWeight: 700,
-  },
-
-  info: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 14,
-    color: 'var(--text)',
-    fontSize: 16,
-  },
-
-  icon: {
-    color: 'var(--primary)',
-    fontSize: 18,
-  },
-
-  description: {
-    marginTop: 20,
-    color: 'var(--text-muted)',
-    fontSize: 14,
-    lineHeight: 1.7,
-  },
-
-  button: {
-    width: '100%',
-    marginTop: 10,
-  },
+const inputStyle = {
+  width: '100%',
+  padding: '0.65rem 0.85rem',
+  border: '1px solid #c8e6c9',
+  borderRadius: '6px',
+  fontSize: '0.95rem',
+  outline: 'none',
+  fontFamily: 'inherit',
 };
